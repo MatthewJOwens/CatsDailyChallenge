@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using CatsDailyChallenge.Repositories;
 using CatsDailyChallenge.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MySql.Data.MySqlClient;
 
 namespace CatsDailyChallenge
 {
@@ -27,7 +30,15 @@ namespace CatsDailyChallenge
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddControllers();
+      services.AddScoped<IDbConnection>(x => CreateDBConnection());
       services.AddTransient<BlogsService>();
+      services.AddTransient<BlogsRepository>();
+    }
+
+    private IDbConnection CreateDBConnection()
+    {
+      string connectionString = Configuration["db:gearhost"];
+      return new MySqlConnection(connectionString);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
