@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CatsDailyChallenge.Models;
+using CatsDailyChallenge.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +13,17 @@ namespace CatsDailyChallenge.Controllers
   [Route("api/[controller]")]
   public class BlogsController : ControllerBase
   {
-    public ActionResult<string> getBlog()
+    private readonly BlogsService _bs;
+    public BlogsController(BlogsService bs)
+    {
+      _bs = bs;
+    }
+    [HttpGet]
+    public ActionResult<IEnumerable<Blog>> getBlogs()
     {
       try
       {
-        return Ok("got blogs");
+        return Ok(_bs.GetAll());
       }
       catch (System.Exception)
       {
